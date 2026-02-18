@@ -59,7 +59,7 @@ function Notification:Notify(title, text, duration)
     frame.BorderSizePixel = 0
     frame.Parent = holder
 
-    -- Glass effect
+    -- Glass stroke
     local stroke = Instance.new("UIStroke")
     stroke.Color = Color3.fromRGB(255, 255, 255)
     stroke.Transparency = 0.8
@@ -94,7 +94,30 @@ function Notification:Notify(title, text, duration)
     bodyLabel.TextXAlignment = Enum.TextXAlignment.Left
     bodyLabel.Parent = frame
 
-    -- Initial animation state
+    -- Progress bar background
+    local barBG = Instance.new("Frame")
+    barBG.Size = UDim2.new(1, -12, 0, 4)
+    barBG.Position = UDim2.new(0, 6, 1, -8)
+    barBG.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    barBG.BorderSizePixel = 0
+    barBG.Parent = frame
+
+    local barCorner = Instance.new("UICorner")
+    barCorner.CornerRadius = UDim.new(1, 0)
+    barCorner.Parent = barBG
+
+    -- Progress bar fill
+    local bar = Instance.new("Frame")
+    bar.Size = UDim2.new(1, 0, 1, 0)
+    bar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    bar.BorderSizePixel = 0
+    bar.Parent = barBG
+
+    local barFillCorner = Instance.new("UICorner")
+    barFillCorner.CornerRadius = UDim.new(1, 0)
+    barFillCorner.Parent = bar
+
+    -- Initial animation
     frame.Position = UDim2.new(1, 50, 0, 0)
     frame.BackgroundTransparency = 1
 
@@ -107,6 +130,14 @@ function Notification:Notify(title, text, duration)
         }
     )
     inTween:Play()
+
+    -- Progress bar tween
+    local barTween = TweenService:Create(
+        bar,
+        TweenInfo.new(duration, Enum.EasingStyle.Linear),
+        { Size = UDim2.new(0, 0, 1, 0) }
+    )
+    barTween:Play()
 
     -- Auto remove
     task.delay(duration, function()
